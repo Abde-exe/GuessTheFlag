@@ -5,12 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.guesstheflag.databinding.FragmentInfosBinding
 
 
 class InfosFragment : Fragment() {
 private lateinit var _binding: FragmentInfosBinding
+private lateinit var nameET : EditText
+private lateinit var startBtn : Button
+private lateinit var radioGroup:RadioGroup
+private var region : String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +35,58 @@ private lateinit var _binding: FragmentInfosBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navController = Navigation.findNavController(view)
         _binding = FragmentInfosBinding.bind(view)
 
-        _binding.startButton.setOnClickListener {
-            val navController = Navigation.findNavController(view)
-            navController.navigate(R.id.action_infosFragment_to_gameFragment)
+        startBtn = _binding.startButton
+        radioGroup = _binding.radioGroup
+        nameET = _binding.editTextName
+
+
+
+
+        //radiogroup
+        radioGroup.apply {
+            setOnCheckedChangeListener{_, checkedId ->
+                startBtn.isEnabled = checkedId != -1
+            }
+        }
+
+
+        //start button
+        startBtn.setOnClickListener {
+            val checkedId = radioGroup.checkedRadioButtonId
+
+            if (checkedId != -1) {
+                val checkedRadioButton = radioGroup.findViewById<View>(checkedId)
+                val checkedIndex = radioGroup.indexOfChild(checkedRadioButton)
+                region = when (checkedIndex) {
+                    0 -> "europe"
+                    1 -> "africa"
+                    2 -> "america"
+                    3 -> "asia"
+                    else -> "worldwide"
+                }
+
+            }
+            else{
+                Toast.makeText(context, "Please select a region", Toast.LENGTH_SHORT).show()
+            }
+
+
+            if(nameET.text.isNotEmpty()){
+                navController.navigate(R.id.action_infosFragment_to_gameFragment)
+
+                //safe args
+                //var name = nameET.text.toString()
+                //val action = InfosFragmentDirections.actionInfosFragmentToGameFragment(name, region)
+                //navController.navigate(action)
+
+            }
+            else{
+                Toast.makeText(context, "Please enter your name", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
     }
