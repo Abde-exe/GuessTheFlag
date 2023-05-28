@@ -25,13 +25,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(_binding.root)
 
         navController= Navigation.findNavController(this,R.id.nav_host_fragment)
-        val appBarConfig = AppBarConfiguration(topLevelDestinationIds = setOf(
+    /*    val appBarConfig = AppBarConfiguration(topLevelDestinationIds = setOf(
             R.id.home,
             R.id.list,
             R.id.about
         ))
 
-        setupActionBarWithNavController(navController, appBarConfig)
+        setupActionBarWithNavController(navController, appBarConfig)*/
          _binding.bottomNavigationView.setupWithNavController(navController)
 
 

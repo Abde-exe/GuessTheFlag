@@ -6,22 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".InfosFragment">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputTextLayout"
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_marginTop="20dp"
         android:layout_width="342dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="194dp">
+        android:hint="@string/enter_your_name"
+        android:inputType="text"
+        />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="hint" />
-    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <View
         android:id="@+id/europe_btn"
@@ -31,7 +29,7 @@
         android:background="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/africa_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inputTextLayout"></View>
+        app:layout_constraintTop_toBottomOf="@id/editTextName"></View>
 
     <View
         android:id="@+id/africa_btn"
@@ -41,7 +39,7 @@
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/europe_btn"
-        app:layout_constraintTop_toBottomOf="@id/inputTextLayout"></View>
+        app:layout_constraintTop_toBottomOf="@id/editTextName"></View>
 
     <View
         android:id="@+id/asia_btn"
@@ -76,6 +74,44 @@
         app:layout_constraintTop_toBottomOf="@id/asia_btn">
 
     </View>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/worldwide_btn">
+
+        <RadioButton
+            android:id="@+id/option1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/europe" />
+
+        <RadioButton
+            android:id="@+id/option2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/africa" />
+
+        <RadioButton
+            android:id="@+id/option3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/america" />
+
+        <RadioButton
+            android:id="@+id/option4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/asia" />
+        <RadioButton
+            android:id="@+id/option5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/worldwide" />
+
+    </RadioGroup>
 
 
     <Button
