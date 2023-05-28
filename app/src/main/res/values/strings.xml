@@ -5,4 +5,7 @@
     <string name="home">Home</string>
     <string name="leader_board">Leader Board</string>
     <string name="about">About</string>
+    <string name="play">PLAY</string>
+    <string name="guess_the_flag">Guess the Flag!</string>
+    <string name="start">Start</string>
 </resources>

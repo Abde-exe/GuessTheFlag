@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class List : Fragment() {
+class LeaderBoardFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home"
-    android:background="@color/teal_200">
+    tools:context=".HomeFragment"
+    android:background="@color/teal_200"
+    android:orientation="vertical"
+    android:gravity="center">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Fragment"
+        android:text="@string/guess_the_flag"
         android:textSize="26sp"
-        android:layout_gravity="center"/>
+        />
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:src="@drawable/ic_flag"/>
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:text="@string/play"
+        android:textSize="30sp"/>
 
-</FrameLayout>
+</LinearLayout>
