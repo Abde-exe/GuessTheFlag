@@ -12,8 +12,10 @@
         tools:layout="@layout/fragment_infos" >
         <action
             android:id="@+id/action_infosFragment_to_gameFragment"
-            app:destination="@id/gameFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/gameFragment" />
+        <action
+            android:id="@+id/action_infosFragment_to_list"
+            app:destination="@id/list" />
     </fragment>
     <fragment
         android:id="@+id/home"
