@@ -10,7 +10,7 @@
         android:id="@+id/editTextName"
         android:layout_marginTop="20dp"
         android:layout_width="342dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,57 +23,54 @@
 
     <View
         android:id="@+id/europe_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         android:background="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/africa_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextName"></View>
+        app:layout_constraintTop_toBottomOf="@id/editTextName"/>
 
     <View
         android:id="@+id/africa_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/europe_btn"
-        app:layout_constraintTop_toBottomOf="@id/editTextName"></View>
+        app:layout_constraintTop_toBottomOf="@id/editTextName"/>
 
     <View
         android:id="@+id/asia_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         android:background="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/america_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/europe_btn"></View>
+        app:layout_constraintTop_toBottomOf="@id/europe_btn"/>
 
     <View
         android:id="@+id/america_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/asia_btn"
-        app:layout_constraintTop_toBottomOf="@id/africa_btn">
-
-    </View>
+        app:layout_constraintTop_toBottomOf="@id/africa_btn"/>
 
     <View
         android:id="@+id/worldwide_btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/asia_btn">
+        app:layout_constraintTop_toBottomOf="@id/asia_btn"/>
 
-    </View>
 
     <RadioGroup
         android:id="@+id/radioGroup"
