@@ -13,9 +13,6 @@
         <action
             android:id="@+id/action_infosFragment_to_gameFragment"
             app:destination="@id/gameFragment" />
-        <action
-            android:id="@+id/action_infosFragment_to_list"
-            app:destination="@id/list" />
     </fragment>
     <fragment
         android:id="@+id/home"
@@ -40,5 +37,33 @@
         android:id="@+id/gameFragment"
         android:name="com.example.guesstheflag.GameFragment"
         android:label="fragment_game"
-        tools:layout="@layout/fragment_game" />
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_gameFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <argument
+            android:name="region"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.example.guesstheflag.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="resultScore"
+            app:argType="integer" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_resultFragment_to_infosFragment"
+            app:destination="@id/infosFragment" />
+        <action
+            android:id="@+id/action_resultFragment_to_list"
+            app:destination="@id/list" />
+    </fragment>
 </navigation>

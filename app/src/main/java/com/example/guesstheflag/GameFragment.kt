@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.guesstheflag.databinding.FragmentGameBinding
 import com.squareup.picasso.Picasso
 import java.util.*
@@ -16,7 +18,11 @@ import kotlin.collections.ArrayList
 
 class GameFragment : Fragment() {
     private lateinit var _binding:FragmentGameBinding
+    private lateinit var navController:NavController
+    private lateinit var args:GameFragmentArgs
 
+    private lateinit var region:String
+    private lateinit var userName:String
     private lateinit var questions:ArrayList<Question>
     private var score:Int = 0
     private var selectedAnswer :String=""
@@ -42,38 +48,32 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        navController = Navigation.findNavController(view)
+        _binding = FragmentGameBinding.bind(view)
+
+        //btns
         defaultBtnColor = ContextCompat.getColor(requireContext(), R.color.purple_700)
         correctBtnColor = ContextCompat.getColor(requireContext(), R.color.green_700)
         wrongBtnColor = ContextCompat.getColor(requireContext(), R.color.red_700)
         selectedBtnColor = ContextCompat.getColor(requireContext(), R.color.gray_700)
 
-        _binding = FragmentGameBinding.bind(view)
+        //safeargs
+        args = GameFragmentArgs.fromBundle(requireArguments())
+        region = args.region
+        userName = args.userName
+
+        _binding.userNameTv.text = userName
+        _binding.regionTv.text = region
+
+
         setQuestion()
+        submitBtnHandler()
+        answerBtnsHandler()
 
+    }
 
-
-        _binding.submitBtn.setOnClickListener {
-
-            if (submitted) {
-                if (currentPosition < questions.size) {
-                    setQuestion()
-                    submitted = false
-                    _binding.submitBtn.text = getString(R.string.submit)
-                } else Toast.makeText(requireContext(), "Game Over", Toast.LENGTH_SHORT).show()
-            } else {
-                if (selectedAnswer.isNotEmpty()) {
-                    checkAnswer()
-                    submitted = true
-                    _binding.submitBtn.text = getString(R.string.next_flag)
-                } else Toast.makeText(
-                    requireContext(),
-                    "Please select an answer",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-
+    private fun answerBtnsHandler() {
         // listeners for the buttons
         _binding.option1Btn.setOnClickListener {
             selectedAnswer = _binding.option1Btn.text.toString().lowercase(Locale.ROOT)
@@ -95,6 +95,32 @@ class GameFragment : Fragment() {
             _binding.option3Btn.setBackgroundColor(selectedBtnColor)
             _binding.option1Btn.setBackgroundColor(defaultBtnColor)
             _binding.option2Btn.setBackgroundColor(defaultBtnColor)
+        }
+    }
+
+    private fun submitBtnHandler() {
+        _binding.submitBtn.setOnClickListener {
+            if (submitted) {
+                if (currentPosition < questions.size) {
+                    setQuestion()
+                    submitted = false
+                    _binding.submitBtn.text = getString(R.string.submit)
+                } else{
+                    val action = GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
+                    navController.navigate(action)
+                    Toast.makeText(requireContext(), getString(R.string.game_over), Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                if (selectedAnswer.isNotEmpty()) {
+                    checkAnswer()
+                    submitted = true
+                    _binding.submitBtn.text = getString(R.string.next_flag)
+                } else Toast.makeText(
+                    requireContext(),
+                    getString(R.string.select_answer),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

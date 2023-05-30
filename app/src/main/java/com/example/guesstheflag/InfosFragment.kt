@@ -61,11 +61,11 @@ private var region : String = ""
                 val checkedRadioButton = radioGroup.findViewById<View>(checkedId)
                 val checkedIndex = radioGroup.indexOfChild(checkedRadioButton)
                 region = when (checkedIndex) {
-                    0 -> "europe"
-                    1 -> "africa"
-                    2 -> "america"
-                    3 -> "asia"
-                    else -> "worldwide"
+                    0 -> "Europe"
+                    1 -> "Africa"
+                    2 -> "America"
+                    3 -> "Asia"
+                    else -> "Worldwide"
                 }
 
             }
@@ -75,12 +75,9 @@ private var region : String = ""
 
 
             if(nameET.text.isNotEmpty()){
-                navController.navigate(R.id.action_infosFragment_to_gameFragment)
-
-                //safe args
-                //var name = nameET.text.toString()
-                //val action = InfosFragmentDirections.actionInfosFragmentToGameFragment(name, region)
-                //navController.navigate(action)
+                val name = nameET.text.toString()
+                val action = InfosFragmentDirections.actionInfosFragmentToGameFragment(name, region)
+                navController.navigate(action)
 
             }
             else{
