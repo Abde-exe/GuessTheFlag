@@ -6,6 +6,8 @@
     <string name="leader_board">Leader Board</string>
     <string name="about">About</string>
     <string name="play">PLAY</string>
+    <string name="play_again">PLAY AGAIN</string>
+    <string name="see_leaderboard">Leader Board</string>
     <string name="guess_the_flag">Guess the Flag!</string>
     <string name="start">Start</string>
     <string name="europe">Europe</string>
@@ -14,4 +16,9 @@
     <string name="asia">Asia</string>
     <string name="worldwide">Worldwide</string>
     <string name="enter_your_name">Enter your name</string>
+    <string name="submit">SUBMIT</string>
+    <string name="question">To which country does this flag belong?</string>
+    <string name="next_flag">NEXT</string>
+    <string name="game_over">Game Over</string>
+    <string name="select_answer">Please select an answer</string>
 </resources>
