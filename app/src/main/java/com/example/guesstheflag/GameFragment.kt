@@ -10,8 +10,14 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.example.guesstheflag.databinding.FragmentGameBinding
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -35,8 +41,10 @@ class GameFragment : Fragment() {
     private  var correctBtnColor : Int = 0
     private  var wrongBtnColor : Int = 0
     private  var selectedBtnColor : Int = 0
+    private var nextBtnColor : Int = 0
+    private var submitBtnColor : Int = 0
 
-
+    private val myScope = CoroutineScope(Dispatchers.IO)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,11 +60,16 @@ class GameFragment : Fragment() {
         navController = Navigation.findNavController(view)
         _binding = FragmentGameBinding.bind(view)
 
+
         //btns
         defaultBtnColor = ContextCompat.getColor(requireContext(), R.color.purple_700)
         correctBtnColor = ContextCompat.getColor(requireContext(), R.color.green_700)
         wrongBtnColor = ContextCompat.getColor(requireContext(), R.color.red_700)
         selectedBtnColor = ContextCompat.getColor(requireContext(), R.color.gray_700)
+        nextBtnColor = ContextCompat.getColor(requireContext(), R.color.gray_200)
+        submitBtnColor = ContextCompat.getColor(requireContext(), R.color.black)
+
+        val database : AppDatabase by lazy { Room.databaseBuilder(requireContext(), AppDatabase::class.java,"my-database").build()}
 
         //safeargs
         args = GameFragmentArgs.fromBundle(requireArguments())
@@ -104,22 +117,42 @@ class GameFragment : Fragment() {
                 if (currentPosition < questions.size) {
                     setQuestion()
                     submitted = false
-                    _binding.submitBtn.text = getString(R.string.submit)
+                    _binding.submitBtn.apply {
+                        setBackgroundColor(submitBtnColor)
+                        setTextColor(nextBtnColor)
+                        text = getString(R.string.submit)
+                    }
                 } else{
                     val action = GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
                     navController.navigate(action)
+                    onFinishGame()
                     Toast.makeText(requireContext(), getString(R.string.game_over), Toast.LENGTH_SHORT).show()
                 }
             } else {
                 if (selectedAnswer.isNotEmpty()) {
                     checkAnswer()
                     submitted = true
-                    _binding.submitBtn.text = getString(R.string.next_flag)
+
+                    _binding.submitBtn.apply{
+                        text = getString(R.string.next_flag)
+                        setBackgroundColor(nextBtnColor)
+                        setTextColor(submitBtnColor)
+                    }
                 } else Toast.makeText(
                     requireContext(),
                     getString(R.string.select_answer),
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }
+    }
+
+    private fun onFinishGame(){
+        myScope.launch {
+            val newUserScore = UserScore(0, userName, score)
+            context?.let {
+                val database : AppDatabase by lazy { Room.databaseBuilder(it, AppDatabase::class.java,"my-database").build()}
+                database.userScoreDao().insertUserScore(newUserScore)
             }
         }
     }

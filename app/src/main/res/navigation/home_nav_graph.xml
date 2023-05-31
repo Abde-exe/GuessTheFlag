@@ -32,7 +32,7 @@
         android:id="@+id/list"
         android:name="com.example.guesstheflag.LeaderBoardFragment"
         android:label="Leader Board"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_leaderboard" />
     <fragment
         android:id="@+id/gameFragment"
         android:name="com.example.guesstheflag.GameFragment"
