@@ -42,10 +42,6 @@ class ResultFragment : Fragment() {
             navController.navigate(R.id.action_resultFragment_to_infosFragment)
         }
 
-        _binding.goToLeaderBoardButton.setOnClickListener {
-            navController.navigate(R.id.action_resultFragment_to_list)
-        }
-
 
     }
 

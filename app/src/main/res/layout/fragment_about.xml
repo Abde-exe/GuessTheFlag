@@ -9,8 +9,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retrofit, Picasso, Room, data bindind, navigation, safeargs"
+        android:text="App created by Abdessamad Bourhaleb and Adil El Mobachi. We used Retrofit, Picasso, Room, data bindind, navigation, safeargs."
         android:textSize="26sp"
         android:layout_gravity="center"/>
+
+
 
 </FrameLayout>
