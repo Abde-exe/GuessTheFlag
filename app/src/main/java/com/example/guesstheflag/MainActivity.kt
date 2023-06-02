@@ -8,16 +8,15 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
 import com.example.guesstheflag.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var _binding: ActivityMainBinding
     private lateinit var navController: NavController
 
-    val myScope = CoroutineScope(Dispatchers.IO)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,15 +36,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val database : AppDatabase by lazy { Room.databaseBuilder(this, AppDatabase::class.java,"my-database")
-            .build()
-        }
 
-       /* myScope.launch {
-            withContext(Dispatchers.IO){
-                 database.userScoreDao().insertUserScore(UserScore(0,"test",0))
-            }
-        }*/
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

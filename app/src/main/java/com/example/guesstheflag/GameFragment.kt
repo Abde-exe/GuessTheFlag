@@ -8,16 +8,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.guesstheflag.databinding.FragmentGameBinding
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import retrofit2.Retrofit
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,7 +27,9 @@ class GameFragment : Fragment() {
 
     private lateinit var region:String
     private lateinit var userName:String
-    private lateinit var questions:ArrayList<Question>
+    private  var questions:ArrayList<Question> = ArrayList()
+    private  var countries:ArrayList<Country> = ArrayList()
+    private lateinit var countriesName:ArrayList<String>
     private var score:Int = 0
     private var selectedAnswer :String=""
     private var selectedBtn :Button?=null
@@ -49,10 +49,16 @@ class GameFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //safeargs
+        args = GameFragmentArgs.fromBundle(requireArguments())
+        region = args.region
+        userName = args.userName
 
-        questions = Constants.getQuestion()
+        // api call for the countries
+        fetchCountries()
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,18 +75,11 @@ class GameFragment : Fragment() {
         nextBtnColor = ContextCompat.getColor(requireContext(), R.color.gray_200)
         submitBtnColor = ContextCompat.getColor(requireContext(), R.color.black)
 
-        val database : AppDatabase by lazy { Room.databaseBuilder(requireContext(), AppDatabase::class.java,"my-database").build()}
-
-        //safeargs
-        args = GameFragmentArgs.fromBundle(requireArguments())
-        region = args.region
-        userName = args.userName
 
         _binding.userNameTv.text = userName
         _binding.regionTv.text = region
 
 
-        setQuestion()
         submitBtnHandler()
         answerBtnsHandler()
 
@@ -115,7 +114,7 @@ class GameFragment : Fragment() {
         _binding.submitBtn.setOnClickListener {
             if (submitted) {
                 if (currentPosition < questions.size) {
-                    setQuestion()
+                    setUI()
                     submitted = false
                     _binding.submitBtn.apply {
                         setBackgroundColor(submitBtnColor)
@@ -158,7 +157,23 @@ class GameFragment : Fragment() {
     }
 
 
-    private fun setQuestion(){
+    private fun setQuestions(){
+        val random = Random()
+        for (i in 0..9){
+            val randomIndex = random.nextInt(countries.size)
+            val country = countries[randomIndex]
+            countriesName.filter { it != country.name.common}
+            val randomAnswer1 = countriesName[random.nextInt(countriesName.size)]
+            val randomAnswer2 = countriesName[random.nextInt(countriesName.size)]
+            val answerOptions : List<String> = listOf(randomAnswer1, randomAnswer2, country.name.common).shuffled()
+
+            val question = Question(i, country.name.common, country.flags.png,answerOptions )
+            questions.add(question)
+            countries.filter { it != country}
+        }
+    }
+
+    private fun setUI() {
         val question:Question = questions[currentPosition]
         //_binding.flagIv.setImageResource(resources.getIdentifier(question.image, "drawable", requireActivity().packageName))
         Picasso.get().load(question.image).into(_binding.flagIv)
@@ -185,6 +200,36 @@ class GameFragment : Fragment() {
 
         _binding.questionNumberTv.text = "$currentPosition/${questions.size} flags"
     }
+    private fun fetchCountries(){
+        lifecycleScope.launch {
+            countriesName = ArrayList<String>()
+            val response = try {
+                if(region=="Worldwide") RetrofitInstance.api.getAllCountries()
+                else RetrofitInstance.api.getCountriesByRegion(region)
+            }
+            catch (e:Exception){
+                println("Error: ${e.message}")
+                null
+            }
+            if (response != null) {
+                if (response.isSuccessful && response.body() != null){
+                    for (jsonObject in response.body()!!)
+                    {
+                        val country = Country(jsonObject.name, jsonObject.region, jsonObject.flags)
+                        countries.add(country)
+                        countriesName.add(country.name.common)
+                    }
+
+                }
+            }
+            //main thread
+            withContext(Dispatchers.Main){
+                setQuestions()
+                setUI()
+            }
+
+        }
+    }
 
     private fun checkAnswer(){
         if(selectedAnswer == correctAnswer.lowercase(Locale.ROOT)){
@@ -197,7 +242,7 @@ class GameFragment : Fragment() {
             Toast.makeText(requireContext(), "Wrong Answer", Toast.LENGTH_SHORT).show()
             selectedBtn?.setBackgroundColor(wrongBtnColor)
         }
-
+        selectedAnswer = ""
         disableBtns()
     }
 
