@@ -1,5 +1,7 @@
 package com.example.guesstheflag
 
+import com.example.guesstheflag.model.Question
+
 object Constants {
     fun getQuestion(): ArrayList<Question>{
 
