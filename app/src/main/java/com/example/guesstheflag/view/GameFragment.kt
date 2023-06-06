@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,22 +8,28 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.room.Room
+import com.example.guesstheflag.*
+import com.example.guesstheflag.database.AppDatabase
 import com.example.guesstheflag.databinding.FragmentGameBinding
+import com.example.guesstheflag.model.Question
+import com.example.guesstheflag.network.RetrofitInstance
+import com.example.guesstheflag.viewmodel.GameViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
-import retrofit2.Retrofit
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class GameFragment : Fragment() {
     private lateinit var _binding:FragmentGameBinding
+    private lateinit var viewModel: GameViewModel
     private lateinit var navController:NavController
-    private lateinit var args:GameFragmentArgs
+    private lateinit var args: GameFragmentArgs
 
     private lateinit var region:String
     private lateinit var userName:String
@@ -49,13 +55,12 @@ class GameFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
         //safeargs
         args = GameFragmentArgs.fromBundle(requireArguments())
         region = args.region
         userName = args.userName
 
-        // api call for the countries
-        fetchCountries()
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
 
@@ -65,6 +70,7 @@ class GameFragment : Fragment() {
 
         navController = Navigation.findNavController(view)
         _binding = FragmentGameBinding.bind(view)
+
 
 
         //btns
@@ -122,7 +128,8 @@ class GameFragment : Fragment() {
                         text = getString(R.string.submit)
                     }
                 } else{
-                    val action = GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
+                    val action =
+                        GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
                     navController.navigate(action)
                     onFinishGame()
                     Toast.makeText(requireContext(), getString(R.string.game_over), Toast.LENGTH_SHORT).show()
@@ -174,7 +181,7 @@ class GameFragment : Fragment() {
     }
 
     private fun setUI() {
-        val question:Question = questions[currentPosition]
+        val question: Question = questions[currentPosition]
         //_binding.flagIv.setImageResource(resources.getIdentifier(question.image, "drawable", requireActivity().packageName))
         Picasso.get().load(question.image).into(_binding.flagIv)
 
@@ -200,36 +207,7 @@ class GameFragment : Fragment() {
 
         _binding.questionNumberTv.text = "$currentPosition/${questions.size} flags"
     }
-    private fun fetchCountries(){
-        lifecycleScope.launch {
-            countriesName = ArrayList<String>()
-            val response = try {
-                if(region=="Worldwide") RetrofitInstance.api.getAllCountries()
-                else RetrofitInstance.api.getCountriesByRegion(region)
-            }
-            catch (e:Exception){
-                println("Error: ${e.message}")
-                null
-            }
-            if (response != null) {
-                if (response.isSuccessful && response.body() != null){
-                    for (jsonObject in response.body()!!)
-                    {
-                        val country = Country(jsonObject.name, jsonObject.region, jsonObject.flags)
-                        countries.add(country)
-                        countriesName.add(country.name.common)
-                    }
 
-                }
-            }
-            //main thread
-            withContext(Dispatchers.Main){
-                setQuestions()
-                setUI()
-            }
-
-        }
-    }
 
     private fun checkAnswer(){
         if(selectedAnswer == correctAnswer.lowercase(Locale.ROOT)){

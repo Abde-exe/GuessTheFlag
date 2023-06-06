@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.model
 
 data class Question(
     val id: Int,

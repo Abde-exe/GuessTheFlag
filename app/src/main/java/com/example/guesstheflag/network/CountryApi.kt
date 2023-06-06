@@ -1,5 +1,6 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.network
 
+import com.example.guesstheflag.Country
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.guesstheflag.R
 import com.example.guesstheflag.databinding.FragmentResultBinding
 
 
 class ResultFragment : Fragment() {
     private lateinit var _binding: FragmentResultBinding
     private lateinit var navController: NavController
-    private lateinit var args:ResultFragmentArgs
+    private lateinit var args: ResultFragmentArgs
 
     private var score:Int = 0
     private lateinit var userName:String

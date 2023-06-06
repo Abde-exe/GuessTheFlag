@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.example.guesstheflag.R
+import com.example.guesstheflag.UserScore
+import com.example.guesstheflag.database.AppDatabase
 import com.example.guesstheflag.databinding.FragmentLeaderboardBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

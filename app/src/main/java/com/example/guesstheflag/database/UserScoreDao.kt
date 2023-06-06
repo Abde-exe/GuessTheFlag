@@ -1,6 +1,7 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.database
 
 import androidx.room.*
+import com.example.guesstheflag.UserScore
 
 @Dao
 interface UserScoreDao {

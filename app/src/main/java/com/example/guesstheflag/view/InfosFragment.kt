@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.navigation.Navigation
+import com.example.guesstheflag.R
 import com.example.guesstheflag.databinding.FragmentInfosBinding
 
 
