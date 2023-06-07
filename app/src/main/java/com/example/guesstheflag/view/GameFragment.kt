@@ -21,6 +21,7 @@ import com.example.guesstheflag.network.RetrofitInstance
 import com.example.guesstheflag.viewmodel.GameViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
+import retrofit2.Retrofit
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,11 +37,9 @@ class GameFragment : Fragment() {
     private  var questions:ArrayList<Question> = ArrayList()
     private  var countries:ArrayList<Country> = ArrayList()
     private lateinit var countriesName:ArrayList<String>
-    private var score:Int = 0
     private var selectedAnswer :String=""
     private var selectedBtn :Button?=null
     private var correctAnswer : String = ""
-    private var currentPosition: Int = 0
     private var submitted : Boolean = false
 
     private  var defaultBtnColor : Int = 0
@@ -60,6 +59,14 @@ class GameFragment : Fragment() {
         args = GameFragmentArgs.fromBundle(requireArguments())
         region = args.region
         userName = args.userName
+
+        lifecycleScope.launch {
+            viewModel.fetchCountries(region)
+            //main thread
+            withContext(Dispatchers.Main){
+                setUI()
+            }
+        }
 
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
@@ -119,7 +126,7 @@ class GameFragment : Fragment() {
     private fun submitBtnHandler() {
         _binding.submitBtn.setOnClickListener {
             if (submitted) {
-                if (currentPosition < questions.size) {
+                if (viewModel.currentPosition < questions.size) {
                     setUI()
                     submitted = false
                     _binding.submitBtn.apply {
@@ -129,7 +136,7 @@ class GameFragment : Fragment() {
                     }
                 } else{
                     val action =
-                        GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
+                        GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.score, userName)
                     navController.navigate(action)
                     onFinishGame()
                     Toast.makeText(requireContext(), getString(R.string.game_over), Toast.LENGTH_SHORT).show()
@@ -155,7 +162,7 @@ class GameFragment : Fragment() {
 
     private fun onFinishGame(){
         myScope.launch {
-            val newUserScore = UserScore(0, userName, score)
+            val newUserScore = UserScore(0, userName, viewModel.score)
             context?.let {
                 val database : AppDatabase by lazy { Room.databaseBuilder(it, AppDatabase::class.java,"my-database").build()}
                 database.userScoreDao().insertUserScore(newUserScore)
@@ -164,25 +171,9 @@ class GameFragment : Fragment() {
     }
 
 
-    private fun setQuestions(){
-        val random = Random()
-        for (i in 0..9){
-            val randomIndex = random.nextInt(countries.size)
-            val country = countries[randomIndex]
-            countriesName.filter { it != country.name.common}
-            val randomAnswer1 = countriesName[random.nextInt(countriesName.size)]
-            val randomAnswer2 = countriesName[random.nextInt(countriesName.size)]
-            val answerOptions : List<String> = listOf(randomAnswer1, randomAnswer2, country.name.common).shuffled()
-
-            val question = Question(i, country.name.common, country.flags.png,answerOptions )
-            questions.add(question)
-            countries.filter { it != country}
-        }
-    }
 
     private fun setUI() {
-        val question: Question = questions[currentPosition]
-        //_binding.flagIv.setImageResource(resources.getIdentifier(question.image, "drawable", requireActivity().packageName))
+        val question: Question = questions[viewModel.currentPosition]
         Picasso.get().load(question.image).into(_binding.flagIv)
 
         _binding.option1Btn.apply {
@@ -203,16 +194,16 @@ class GameFragment : Fragment() {
         }
 
         correctAnswer = question.answer
-        currentPosition++
+        viewModel.incrementPosition()
 
-        _binding.questionNumberTv.text = "$currentPosition/${questions.size} flags"
+        _binding.questionNumberTv.text = "${viewModel.currentPosition}/${questions.size} flags"
     }
 
 
     private fun checkAnswer(){
         if(selectedAnswer == correctAnswer.lowercase(Locale.ROOT)){
-            score++
-            _binding.score = score
+            viewModel.incrementScore()
+            _binding.score = viewModel.score
             Toast.makeText(requireContext(), "Correct Answer", Toast.LENGTH_SHORT).show()
             selectedBtn?.setBackgroundColor(correctBtnColor)
         }
