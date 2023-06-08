@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/infosFragment"
-        android:name="com.example.guesstheflag.InfosFragment"
+        android:name="com.example.guesstheflag.view.InfosFragment"
         android:label="Play"
         tools:layout="@layout/fragment_infos" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/home"
-        android:name="com.example.guesstheflag.HomeFragment"
+        android:name="com.example.guesstheflag.view.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -25,17 +25,17 @@
     </fragment>
     <fragment
         android:id="@+id/about"
-        android:name="com.example.guesstheflag.AboutFragment"
+        android:name="com.example.guesstheflag.view.AboutFragment"
         android:label="About Us"
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/list"
-        android:name="com.example.guesstheflag.LeaderBoardFragment"
+        android:name="com.example.guesstheflag.view.LeaderBoardFragment"
         android:label="Leader Board"
         tools:layout="@layout/fragment_leaderboard" />
     <fragment
         android:id="@+id/gameFragment"
-        android:name="com.example.guesstheflag.GameFragment"
+        android:name="com.example.guesstheflag.view.GameFragment"
         android:label="fragment_game"
         tools:layout="@layout/fragment_game" >
         <action
@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.example.guesstheflag.ResultFragment"
+        android:name="com.example.guesstheflag.view.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result" >
         <argument

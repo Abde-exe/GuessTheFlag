@@ -1,4 +1,4 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,13 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.room.Room
+import com.example.guesstheflag.*
+import com.example.guesstheflag.database.AppDatabase
 import com.example.guesstheflag.databinding.FragmentGameBinding
+import com.example.guesstheflag.model.Question
+import com.example.guesstheflag.network.RetrofitInstance
+import com.example.guesstheflag.viewmodel.GameViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
@@ -22,20 +30,25 @@ import kotlin.collections.ArrayList
 
 class GameFragment : Fragment() {
     private lateinit var _binding:FragmentGameBinding
+    private lateinit var viewModel: GameViewModel
     private lateinit var navController:NavController
-    private lateinit var args:GameFragmentArgs
+    private lateinit var args: GameFragmentArgs
 
     private lateinit var region:String
     private lateinit var userName:String
-    private  var questions:ArrayList<Question> = ArrayList()
-    private  var countries:ArrayList<Country> = ArrayList()
-    private lateinit var countriesName:ArrayList<String>
-    private var score:Int = 0
+    private  var questions:List<Question> = ArrayList()
+
     private var selectedAnswer :String=""
     private var selectedBtn :Button?=null
     private var correctAnswer : String = ""
-    private var currentPosition: Int = 0
     private var submitted : Boolean = false
+
+    private lateinit var option1btn : Button
+    private lateinit var option2btn : Button
+    private lateinit var option3btn : Button
+    private lateinit var submitBtn : Button
+    private lateinit var flagImg : ImageView
+    private lateinit var progressBar : ProgressBar
 
     private  var defaultBtnColor : Int = 0
     private  var correctBtnColor : Int = 0
@@ -54,10 +67,22 @@ class GameFragment : Fragment() {
         region = args.region
         userName = args.userName
 
-        // api call for the countries
-        fetchCountries()
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
+        viewModel.questions.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            questions = viewModel.questions.value as ArrayList<Question>
+            setUI()
+
+        })
+
+
+        lifecycleScope.launch{
+            viewModel.fetchCountries(region)
+        }
+
+
         return inflater.inflate(R.layout.fragment_game, container, false)
     }
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +92,14 @@ class GameFragment : Fragment() {
         _binding = FragmentGameBinding.bind(view)
 
 
-        //btns
+        //views
+        option1btn = _binding.option1Btn
+        option2btn = _binding.option2Btn
+        option3btn = _binding.option3Btn
+        submitBtn = _binding.submitBtn
+        flagImg = _binding.flagIv
+
+        //btns colors
         defaultBtnColor = ContextCompat.getColor(requireContext(), R.color.purple_700)
         correctBtnColor = ContextCompat.getColor(requireContext(), R.color.green_700)
         wrongBtnColor = ContextCompat.getColor(requireContext(), R.color.red_700)
@@ -79,7 +111,15 @@ class GameFragment : Fragment() {
         _binding.userNameTv.text = userName
         _binding.regionTv.text = region
 
+        progressBar = _binding.progressBar
 
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showLoadingIndicator()
+            } else {
+                hideLoadingIndicator()
+            }
+        }
         submitBtnHandler()
         answerBtnsHandler()
 
@@ -87,44 +127,54 @@ class GameFragment : Fragment() {
 
     private fun answerBtnsHandler() {
         // listeners for the buttons
-        _binding.option1Btn.setOnClickListener {
+        option1btn.setOnClickListener {
             selectedAnswer = _binding.option1Btn.text.toString().lowercase(Locale.ROOT)
             selectedBtn = _binding.option1Btn
-            _binding.option1Btn.setBackgroundColor(selectedBtnColor)
-            _binding.option2Btn.setBackgroundColor(defaultBtnColor)
-            _binding.option3Btn.setBackgroundColor(defaultBtnColor)
+            option1btn.setBackgroundColor(selectedBtnColor)
+            option2btn.setBackgroundColor(defaultBtnColor)
+            option3btn.setBackgroundColor(defaultBtnColor)
         }
-        _binding.option2Btn.setOnClickListener {
+        option2btn.setOnClickListener {
             selectedAnswer = _binding.option2Btn.text.toString().lowercase(Locale.ROOT)
             selectedBtn = _binding.option2Btn
-            _binding.option2Btn.setBackgroundColor(selectedBtnColor)
-            _binding.option1Btn.setBackgroundColor( defaultBtnColor)
-            _binding.option3Btn.setBackgroundColor(defaultBtnColor)
+            option2btn.setBackgroundColor(selectedBtnColor)
+            option1btn.setBackgroundColor( defaultBtnColor)
+            option3btn.setBackgroundColor(defaultBtnColor)
         }
-        _binding.option3Btn.setOnClickListener {
+        option3btn.setOnClickListener {
             selectedAnswer = _binding.option3Btn.text.toString().lowercase(Locale.ROOT)
             selectedBtn = _binding.option3Btn
-            _binding.option3Btn.setBackgroundColor(selectedBtnColor)
-            _binding.option1Btn.setBackgroundColor(defaultBtnColor)
-            _binding.option2Btn.setBackgroundColor(defaultBtnColor)
+            option3btn.setBackgroundColor(selectedBtnColor)
+            option1btn.setBackgroundColor(defaultBtnColor)
+            option2btn.setBackgroundColor(defaultBtnColor)
         }
     }
 
+    private fun hideLoadingIndicator() {
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showLoadingIndicator() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+
     private fun submitBtnHandler() {
-        _binding.submitBtn.setOnClickListener {
+       submitBtn.setOnClickListener {
             if (submitted) {
-                if (currentPosition < questions.size) {
+                if (viewModel.currentPosition < questions.size) {
                     setUI()
                     submitted = false
-                    _binding.submitBtn.apply {
+                    submitBtn.apply {
                         setBackgroundColor(submitBtnColor)
                         setTextColor(nextBtnColor)
                         text = getString(R.string.submit)
                     }
                 } else{
-                    val action = GameFragmentDirections.actionGameFragmentToResultFragment(score, userName)
-                    navController.navigate(action)
                     onFinishGame()
+                    val action =
+                        GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.score, userName)
+                    navController.navigate(action)
                     Toast.makeText(requireContext(), getString(R.string.game_over), Toast.LENGTH_SHORT).show()
                 }
             } else {
@@ -132,7 +182,7 @@ class GameFragment : Fragment() {
                     checkAnswer()
                     submitted = true
 
-                    _binding.submitBtn.apply{
+                    submitBtn.apply{
                         text = getString(R.string.next_flag)
                         setBackgroundColor(nextBtnColor)
                         setTextColor(submitBtnColor)
@@ -148,7 +198,7 @@ class GameFragment : Fragment() {
 
     private fun onFinishGame(){
         myScope.launch {
-            val newUserScore = UserScore(0, userName, score)
+            val newUserScore = UserScore(0, userName, viewModel.score)
             context?.let {
                 val database : AppDatabase by lazy { Room.databaseBuilder(it, AppDatabase::class.java,"my-database").build()}
                 database.userScoreDao().insertUserScore(newUserScore)
@@ -157,84 +207,43 @@ class GameFragment : Fragment() {
     }
 
 
-    private fun setQuestions(){
-        val random = Random()
-        for (i in 0..9){
-            val randomIndex = random.nextInt(countries.size)
-            val country = countries[randomIndex]
-            countriesName.filter { it != country.name.common}
-            val randomAnswer1 = countriesName[random.nextInt(countriesName.size)]
-            val randomAnswer2 = countriesName[random.nextInt(countriesName.size)]
-            val answerOptions : List<String> = listOf(randomAnswer1, randomAnswer2, country.name.common).shuffled()
-
-            val question = Question(i, country.name.common, country.flags.png,answerOptions )
-            questions.add(question)
-            countries.filter { it != country}
-        }
-    }
 
     private fun setUI() {
-        val question:Question = questions[currentPosition]
-        //_binding.flagIv.setImageResource(resources.getIdentifier(question.image, "drawable", requireActivity().packageName))
+        val question: Question = questions[viewModel.currentPosition]
+        flagImg.visibility = View.VISIBLE
         Picasso.get().load(question.image).into(_binding.flagIv)
 
-        _binding.option1Btn.apply {
+        option1btn.apply {
+            visibility = View.VISIBLE
             isEnabled = true
             text = question.options[0]
             setBackgroundColor(defaultBtnColor)
 
         }
-        _binding.option2Btn.apply {
+        option2btn.apply {
+            visibility = View.VISIBLE
             isEnabled = true
             text = question.options[1]
             setBackgroundColor(defaultBtnColor)
         }
-        _binding.option3Btn.apply {
+        option3btn.apply {
+            visibility = View.VISIBLE
             isEnabled = true
             text = question.options[2]
             setBackgroundColor(defaultBtnColor)
         }
 
         correctAnswer = question.answer
-        currentPosition++
+        viewModel.incrementPosition()
 
-        _binding.questionNumberTv.text = "$currentPosition/${questions.size} flags"
+        _binding.questionNumberTv.text = "${viewModel.currentPosition}/${questions.size} flags"
     }
-    private fun fetchCountries(){
-        lifecycleScope.launch {
-            countriesName = ArrayList<String>()
-            val response = try {
-                if(region=="Worldwide") RetrofitInstance.api.getAllCountries()
-                else RetrofitInstance.api.getCountriesByRegion(region)
-            }
-            catch (e:Exception){
-                println("Error: ${e.message}")
-                null
-            }
-            if (response != null) {
-                if (response.isSuccessful && response.body() != null){
-                    for (jsonObject in response.body()!!)
-                    {
-                        val country = Country(jsonObject.name, jsonObject.region, jsonObject.flags)
-                        countries.add(country)
-                        countriesName.add(country.name.common)
-                    }
 
-                }
-            }
-            //main thread
-            withContext(Dispatchers.Main){
-                setQuestions()
-                setUI()
-            }
-
-        }
-    }
 
     private fun checkAnswer(){
         if(selectedAnswer == correctAnswer.lowercase(Locale.ROOT)){
-            score++
-            _binding.score = score
+            viewModel.incrementScore()
+            _binding.score = viewModel.score
             Toast.makeText(requireContext(), "Correct Answer", Toast.LENGTH_SHORT).show()
             selectedBtn?.setBackgroundColor(correctBtnColor)
         }
@@ -248,9 +257,9 @@ class GameFragment : Fragment() {
 
 
     private fun disableBtns(){
-        _binding.option3Btn.isEnabled = false
-        _binding.option1Btn.isEnabled = false
-        _binding.option2Btn.isEnabled = false
+        option1btn.isEnabled = false
+        option2btn.isEnabled = false
+        option3btn.isEnabled = false
     }
 
 

@@ -4,80 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InfosFragment">
+    tools:context=".view.InfosFragment">
+
+    <TextView
+        android:id="@+id/nameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/name"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <EditText
         android:id="@+id/editTextName"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_width="342dp"
         android:layout_height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameTv"
         android:hint="@string/enter_your_name"
         android:inputType="text"
         />
 
-
-
-
-    <View
-        android:id="@+id/europe_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/africa_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextName"/>
-
-    <View
-        android:id="@+id/africa_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/europe_btn"
-        app:layout_constraintTop_toBottomOf="@id/editTextName"/>
-
-    <View
-        android:id="@+id/asia_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/america_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/europe_btn"/>
-
-    <View
-        android:id="@+id/america_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/asia_btn"
-        app:layout_constraintTop_toBottomOf="@id/africa_btn"/>
-
-    <View
-        android:id="@+id/worldwide_btn"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/asia_btn"/>
+    <TextView
+        android:id="@+id/regionTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/select_a_region"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/editTextName"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 
     <RadioGroup
         android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/worldwide_btn">
+        app:layout_constraintTop_toBottomOf="@id/regionTv"
+        app:layout_constraintStart_toStartOf="parent">
 
         <RadioButton
             android:id="@+id/option1"
@@ -121,7 +92,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/worldwide_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

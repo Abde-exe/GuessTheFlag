@@ -21,4 +21,6 @@
     <string name="next_flag">NEXT</string>
     <string name="game_over">Game Over</string>
     <string name="select_answer">Please select an answer</string>
+    <string name="name">Name</string>
+    <string name="select_a_region">Select a region</string>
 </resources>

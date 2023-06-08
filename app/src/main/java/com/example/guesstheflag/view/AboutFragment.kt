@@ -1,11 +1,11 @@
-package com.example.guesstheflag
+package com.example.guesstheflag.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.room.Room
+import com.example.guesstheflag.R
 import com.example.guesstheflag.databinding.FragmentAboutBinding
 
 class AboutFragment : Fragment() {

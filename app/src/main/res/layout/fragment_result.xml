@@ -3,26 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResultFragment"
+    tools:context=".view.ResultFragment"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center">
 
     <TextView
         android:id="@+id/nameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/hello_blank_fragment"
+        android:textSize="30sp"/>
 
     <TextView
         android:id="@+id/scoreTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Score :0" />
+        android:layout_marginTop="16dp"
+        tools:text="Score :0"
+        android:textSize="30sp"/>
 
     <Button
         android:id="@+id/playAgainButton"
         android:layout_width="120dp"
         android:layout_height="60dp"
+        android:layout_marginTop="16dp"
         android:text="@string/play_again"
         android:textSize="15sp"/>
 
