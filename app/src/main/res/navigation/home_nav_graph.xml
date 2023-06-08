@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/infosFragment"
+        android:name="com.example.guesstheflag.view.InfosFragment"
+        android:label="Play"
+        tools:layout="@layout/fragment_infos" >
+        <action
+            android:id="@+id/action_infosFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.guesstheflag.view.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home2_to_infosFragment"
+            app:destination="@id/infosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/about"
+        android:name="com.example.guesstheflag.view.AboutFragment"
+        android:label="About Us"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/list"
+        android:name="com.example.guesstheflag.view.LeaderBoardFragment"
+        android:label="Leader Board"
+        tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.example.guesstheflag.view.GameFragment"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_gameFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <argument
+            android:name="region"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.example.guesstheflag.view.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="resultScore"
+            app:argType="integer" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_resultFragment_to_infosFragment"
+            app:destination="@id/infosFragment" />
+        <action
+            android:id="@+id/action_resultFragment_to_list"
+            app:destination="@id/list" />
+    </fragment>
+</navigation>
