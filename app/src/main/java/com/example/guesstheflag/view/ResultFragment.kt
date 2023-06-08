@@ -37,7 +37,7 @@ class ResultFragment : Fragment() {
         userName = args.userName
 
         _binding.nameTv.text = "Well done $userName!"
-        _binding.scoreTv.text = "Your score is $score"
+        _binding.scoreTv.text = "You scored $score pts!"
 
         _binding.playAgainButton.setOnClickListener {
             navController.navigate(R.id.action_resultFragment_to_infosFragment)
