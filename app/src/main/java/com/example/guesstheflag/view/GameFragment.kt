@@ -19,11 +19,9 @@ import com.example.guesstheflag.*
 import com.example.guesstheflag.database.AppDatabase
 import com.example.guesstheflag.databinding.FragmentGameBinding
 import com.example.guesstheflag.model.Question
-import com.example.guesstheflag.network.RetrofitInstance
 import com.example.guesstheflag.viewmodel.GameViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
-import retrofit2.Retrofit
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -126,7 +124,7 @@ class GameFragment : Fragment() {
     }
 
     private fun answerBtnsHandler() {
-        // listeners for the buttons
+        // Listeners pour les boutons
         option1btn.setOnClickListener {
             selectedAnswer = _binding.option1Btn.text.toString().lowercase(Locale.ROOT)
             selectedBtn = _binding.option1Btn
@@ -160,9 +158,12 @@ class GameFragment : Fragment() {
 
 
     private fun submitBtnHandler() {
+        // Listener pour le bouton submit
        submitBtn.setOnClickListener {
             if (submitted) {
+                // Si l'utilisateur a déjà soumis une réponse
                 if (viewModel.currentPosition < questions.size) {
+                    // Si l'utilisateur n'a pas répondu à toutes les questions, on passe à la suivante
                     setUI()
                     submitted = false
                     submitBtn.apply {
@@ -171,6 +172,7 @@ class GameFragment : Fragment() {
                         text = getString(R.string.submit)
                     }
                 } else{
+                    // Si l'utilisateur a répondu à toutes les questions, on termine le jeu et on affiche le score
                     onFinishGame()
                     val action =
                         GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.score, userName)
@@ -179,6 +181,7 @@ class GameFragment : Fragment() {
                 }
             } else {
                 if (selectedAnswer.isNotEmpty()) {
+                    // Si l'utilisateur a sélectionné une réponse, on vérifie si elle est correcte
                     checkAnswer()
                     submitted = true
 
@@ -187,7 +190,9 @@ class GameFragment : Fragment() {
                         setBackgroundColor(nextBtnColor)
                         setTextColor(submitBtnColor)
                     }
-                } else Toast.makeText(
+                }
+                // Sinon on affiche un message d'erreur pour demander à l'utilisateur de sélectionner une réponse
+                else Toast.makeText(
                     requireContext(),
                     getString(R.string.select_answer),
                     Toast.LENGTH_SHORT
@@ -209,6 +214,7 @@ class GameFragment : Fragment() {
 
 
     private fun setUI() {
+        // Affichage de la question et des réponses
         val question: Question = questions[viewModel.currentPosition]
         flagImg.visibility = View.VISIBLE
         Picasso.get().load(question.image).into(_binding.flagIv)
