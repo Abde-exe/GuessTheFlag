@@ -6,14 +6,20 @@
     android:background="@color/design_default_color_on_primary">
 <TextView
     android:id="@+id/userNameTv"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
     tools:text="Toto"
-    android:layout_weight="1"/>
+    android:textSize="20sp"
+    android:layout_weight="0.5"/>
 <TextView
     android:id="@+id/userScoreTv"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
     tools:text="10"
-    android:layout_weight="1"/>
+    android:textSize="20sp"
+    android:layout_weight="0.5"
+    android:textAlignment="center"/>
 </LinearLayout>

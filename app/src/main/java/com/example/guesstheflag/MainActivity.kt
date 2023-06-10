@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.example.guesstheflag.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,23 +22,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(_binding.root)
 
         navController= Navigation.findNavController(this,R.id.nav_host_fragment)
-    /*    val appBarConfig = AppBarConfiguration(topLevelDestinationIds = setOf(
-            R.id.home,
-            R.id.list,
-            R.id.about
-        ))
-
-        setupActionBarWithNavController(navController, appBarConfig)*/
-         _binding.bottomNavigationView.setupWithNavController(navController)
-
-
-
-
-
+        _binding.bottomNavigationView.setupWithNavController(navController)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 

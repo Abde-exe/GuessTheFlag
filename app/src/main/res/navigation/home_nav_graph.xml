@@ -62,8 +62,5 @@
         <action
             android:id="@+id/action_resultFragment_to_infosFragment"
             app:destination="@id/infosFragment" />
-        <action
-            android:id="@+id/action_resultFragment_to_list"
-            app:destination="@id/list" />
     </fragment>
 </navigation>

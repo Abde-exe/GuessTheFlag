@@ -10,9 +10,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.navigation.Navigation
-import com.example.guesstheflag.R
 import com.example.guesstheflag.databinding.FragmentInfosBinding
-
 
 class InfosFragment : Fragment() {
 private lateinit var _binding: FragmentInfosBinding
@@ -21,40 +19,28 @@ private lateinit var startBtn : Button
 private lateinit var radioGroup:RadioGroup
 private var region : String = ""
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_infos, container, false)
+        _binding = FragmentInfosBinding.inflate(inflater, container, false)
+        return _binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val navController = Navigation.findNavController(view)
-        _binding = FragmentInfosBinding.bind(view)
 
         startBtn = _binding.startButton
         radioGroup = _binding.radioGroup
         nameET = _binding.editTextName
 
-
-
-
-        //radiogroup
-        radioGroup.apply {
-            setOnCheckedChangeListener{_, checkedId ->
-                startBtn.isEnabled = checkedId != -1
-            }
+        // Gestionnaire d'événements pour le RadioGroup
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            startBtn.isEnabled = checkedId != -1
         }
 
-
-        //start button
+        // Gestionnaire d'événements pour le bouton de démarrage
         startBtn.setOnClickListener {
             val checkedId = radioGroup.checkedRadioButtonId
 
