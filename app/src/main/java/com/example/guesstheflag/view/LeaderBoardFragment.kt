@@ -20,51 +20,42 @@ import kotlinx.coroutines.withContext
 
 class LeaderBoardFragment : Fragment() {
     private lateinit var _binding: FragmentLeaderboardBinding
-    var listScores = mutableListOf<UserScore>()
-
-
-private val myScope = CoroutineScope(Dispatchers.IO)
+    private val listScores = mutableListOf<UserScore>()
+    private val myScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        return inflater.inflate(R.layout.fragment_leaderboard, container, false)
+        _binding = FragmentLeaderboardBinding.inflate(inflater, container, false)
+        return _binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding= FragmentLeaderboardBinding.bind(view)
-        val database : AppDatabase by lazy { Room.databaseBuilder(requireContext(), AppDatabase::class.java,"my-database")
-            .build()
+
+        val database: AppDatabase by lazy {
+            Room.databaseBuilder(requireContext(), AppDatabase::class.java, "my-database")
+                .build()
         }
 
         myScope.launch {
-            withContext(Dispatchers.IO){
-                val list : MutableList<UserScore> = database.userScoreDao().getAllUserScores()
-                listScores.addAll(list)
-                withContext(Dispatchers.Main){
-                    _binding.recyclerView.apply {
-                        adapter = LeaderBoardAdapter(listScores)
-                        layoutManager = LinearLayoutManager(requireContext())
-                    }
-                }
+            val list: MutableList<UserScore> = withContext(Dispatchers.IO) {
+                database.userScoreDao().getAllUserScores()
+            }
+            listScores.addAll(list)
+
+            _binding.recyclerView.apply {
+                adapter = LeaderBoardAdapter(listScores)
+                layoutManager = LinearLayoutManager(requireContext())
             }
         }
-
-
-
-
-
     }
-
 }
 
 class LeaderBoardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-class LeaderBoardAdapter(listScores: MutableList<UserScore>) : RecyclerView.Adapter<LeaderBoardViewHolder>() {
-    var listScores = listScores
+class LeaderBoardAdapter(private val listScores: List<UserScore>) : RecyclerView.Adapter<LeaderBoardViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderBoardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.leaderboard_item, parent, false)
         return LeaderBoardViewHolder(view)
@@ -76,7 +67,10 @@ class LeaderBoardAdapter(listScores: MutableList<UserScore>) : RecyclerView.Adap
             val name = findViewById<TextView>(R.id.userNameTv)
             val score = findViewById<TextView>(R.id.userScoreTv)
             name.text = userScore.name
-            score.text = userScore.score.toString()
+            //rajouter un suffixe 'pts' à la fin du score
+
+            score.text = userScore.score.toString().plus(" pts")
+
         }
     }
 

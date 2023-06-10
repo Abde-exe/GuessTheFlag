@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.guesstheflag.R
 import com.example.guesstheflag.databinding.FragmentResultBinding
 
 
@@ -22,14 +21,14 @@ class ResultFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_result, container, false)
+    ): View {
+        _binding = FragmentResultBinding.inflate(inflater, container, false)
+        return _binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        _binding = FragmentResultBinding.bind(view)
 
         //safeargs
         args = ResultFragmentArgs.fromBundle(requireArguments())
@@ -40,7 +39,8 @@ class ResultFragment : Fragment() {
         _binding.scoreTv.text = "You scored $score pts!"
 
         _binding.playAgainButton.setOnClickListener {
-            navController.navigate(R.id.action_resultFragment_to_infosFragment)
+            val action = ResultFragmentDirections.actionResultFragmentToInfosFragment()
+            navController.navigate(action)
         }
 
 
